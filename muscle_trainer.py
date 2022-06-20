@@ -1,9 +1,8 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
 import argparse
 import copy
 
 import cv2 as cv
+import matplotlib.pyplot as plt
 import mediapipe as mp
 import numpy as np
 
@@ -19,8 +18,6 @@ def get_args():
     parser.add_argument("--device", type=int, default=0)
     parser.add_argument("--width", help="cap width", type=int, default=960)
     parser.add_argument("--height", help="cap height", type=int, default=540)
-
-    # parser.add_argument('--upper_body_only', action='store_true')  # 0.8.3 or less
     parser.add_argument(
         "--model_complexity",
         help="model_complexity(0,1(default),2)",
@@ -56,20 +53,16 @@ def get_args():
 
 
 def main():
-    # 引数解析 #################################################################
     args = get_args()
 
     cap_device = args.device
     cap_width = args.width
     cap_height = args.height
-
-    # upper_body_only = args.upper_body_only
     model_complexity = args.model_complexity
     min_detection_confidence = args.min_detection_confidence
     min_tracking_confidence = args.min_tracking_confidence
     enable_segmentation = args.enable_segmentation
     segmentation_score_th = args.segmentation_score_th
-
     use_brect = args.use_brect
     plot_world_landmark = args.plot_world_landmark
 
@@ -93,7 +86,6 @@ def main():
 
     # World座標プロット ########################################################
     if plot_world_landmark:
-        import matplotlib.pyplot as plt
 
         fig = plt.figure()
         ax = fig.add_subplot(111, projection="3d")
@@ -162,7 +154,6 @@ def main():
         )
 
         if results.pose_landmarks is not None:
-            print("." * 10)
             landmark_point = []
             image_width, image_height = debug_image.shape[1], debug_image.shape[0]
             landmarks = results.pose_landmarks
@@ -176,7 +167,6 @@ def main():
                     np.array(landmark_point[16][1]) - np.array(landmark_point[14][1]),
                 )
             )
-            print(angle)
 
             cv.putText(
                 debug_image,
