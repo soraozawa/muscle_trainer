@@ -7,7 +7,7 @@ import cv2 as cv
 import mediapipe as mp
 import numpy as np
 
-from utils import CvFpsCalc
+from utils import CvFpsCalc, vec_angle
 
 
 def get_args():
@@ -157,6 +157,33 @@ def main():
         )
 
         # TODO: 右腕曲げ角度を測る
+        if results.pose_landmarks is not None:
+            print("." * 10)
+            landmark_point = []
+            image_width, image_height = debug_image.shape[1], debug_image.shape[0]
+            landmarks = results.pose_landmarks
+            for index, landmark in enumerate(landmarks.landmark):
+                landmark_x = min(int(landmark.x * image_width), image_width - 1)
+                landmark_y = min(int(landmark.y * image_height), image_height - 1)
+                landmark_point.append([landmark.visibility, (landmark_x, landmark_y)])
+            angle = np.rad2deg(
+                vec_angle(
+                    np.array(landmark_point[12][1]) - np.array(landmark_point[14][1]),
+                    np.array(landmark_point[16][1]) - np.array(landmark_point[14][1]),
+                )
+            )
+            print(angle)
+
+            cv.putText(
+                debug_image,
+                f"angle: {angle}",
+                (10, 50),
+                cv.FONT_HERSHEY_SIMPLEX,
+                1.0,
+                fps_color,
+                2,
+                cv.LINE_AA,
+            )
 
         # キー処理(ESC：終了) #################################################
         key = cv.waitKey(1)
@@ -343,12 +370,12 @@ def draw_landmarks(
             landmark_point[12][0] > visibility_th
             and landmark_point[14][0] > visibility_th
         ):
-            cv.line(image, landmark_point[12][1], landmark_point[14][1], (0, 255, 0), 2)
+            cv.line(image, landmark_point[12][1], landmark_point[14][1], (255, 0, 0), 2)
         if (
             landmark_point[14][0] > visibility_th
             and landmark_point[16][0] > visibility_th
         ):
-            cv.line(image, landmark_point[14][1], landmark_point[16][1], (0, 255, 0), 2)
+            cv.line(image, landmark_point[14][1], landmark_point[16][1], (255, 0, 0), 2)
 
         # 右手
         if (

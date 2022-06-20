@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def angle(vec1: np.ndarray, vec2: np.ndarray) -> float:
+def vec_angle(vec1: np.ndarray, vec2: np.ndarray) -> float:
     """2つのベクトル間の角度[rad]を計算する
     Args:
         vec1 (np.ndarray): ベクトル1
