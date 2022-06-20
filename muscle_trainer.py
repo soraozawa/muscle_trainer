@@ -156,7 +156,6 @@ def main():
             cv.LINE_AA,
         )
 
-        # TODO: 右腕曲げ角度を測る
         if results.pose_landmarks is not None:
             print("." * 10)
             landmark_point = []
@@ -177,13 +176,26 @@ def main():
             cv.putText(
                 debug_image,
                 f"angle: {angle}",
-                (10, 50),
+                (10, 60),
                 cv.FONT_HERSHEY_SIMPLEX,
                 1.0,
                 fps_color,
                 2,
                 cv.LINE_AA,
             )
+
+        # 筋トレ回数表示########################################
+        counter = 10
+        cv.putText(
+            debug_image,
+            f"counter: {counter}",
+            (10, 90),
+            cv.FONT_HERSHEY_SIMPLEX,
+            1.0,
+            fps_color,
+            2,
+            cv.LINE_AA,
+        )
 
         # キー処理(ESC：終了) #################################################
         key = cv.waitKey(1)
