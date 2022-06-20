@@ -7,7 +7,7 @@ import cv2 as cv
 import mediapipe as mp
 import numpy as np
 
-from utils import CvFpsCalc, vec_angle
+from utils import Counter, CvFpsCalc, vec_angle
 
 
 def get_args():
@@ -95,6 +95,8 @@ def main():
         fig = plt.figure()
         ax = fig.add_subplot(111, projection="3d")
         fig.subplots_adjust(left=0.0, right=1, bottom=0, top=1)
+
+    counter = Counter()
 
     while True:
         display_fps = cvFpsCalc.get()
@@ -185,10 +187,9 @@ def main():
             )
 
         # 筋トレ回数表示########################################
-        counter = 10
         cv.putText(
             debug_image,
-            f"counter: {counter}",
+            f"counter: {counter.count}",
             (10, 90),
             cv.FONT_HERSHEY_SIMPLEX,
             1.0,
