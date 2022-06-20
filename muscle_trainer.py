@@ -9,6 +9,9 @@ import numpy as np
 
 from utils import Counter, CvFpsCalc, vec_angle
 
+upper_threshold_deg = 30
+lower_threshold_deg = 60
+
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -186,11 +189,37 @@ def main():
                 cv.LINE_AA,
             )
 
+        # カウントアップ判定#####################################
+        if results.pose_landmarks is not None:
+            if counter.position == "Neutral":
+                if angle > lower_threshold_deg:
+                    counter.setLower()
+
+            if counter.position == "Lower":
+                if angle < upper_threshold_deg:
+                    counter.setUpper()
+                    counter.countup()
+            if counter.position == "Upper":
+                if angle > lower_threshold_deg:
+                    counter.setLower()
+
         # 筋トレ回数表示########################################
         cv.putText(
             debug_image,
             f"counter: {counter.count}",
             (10, 90),
+            cv.FONT_HERSHEY_SIMPLEX,
+            1.0,
+            fps_color,
+            2,
+            cv.LINE_AA,
+        )
+
+        # ポジション表示########################################
+        cv.putText(
+            debug_image,
+            f"position: {counter.position}",
+            (10, 120),
             cv.FONT_HERSHEY_SIMPLEX,
             1.0,
             fps_color,
